@@ -51,6 +51,23 @@ export async function getAuthorizedClient(): Promise<OAuth2Client | null> {
   return client;
 }
 
+/**
+ * Lee el email del `id_token` que devuelve Google al conectar.
+ *
+ * No hace falta verificar la firma: el token nos llega directamente de Google
+ * por HTTPS en la respuesta a nuestra propia petición (lo permite el estándar
+ * OpenID Connect). Así además evitamos el error "Token used too early" cuando
+ * el reloj del ordenador no está en hora.
+ */
+export function emailFromIdToken(idToken: string): string {
+  try {
+    const payload = JSON.parse(Buffer.from(idToken.split(".")[1], "base64url").toString("utf8"));
+    return typeof payload.email === "string" ? payload.email : "";
+  } catch {
+    return "";
+  }
+}
+
 /** El refresh token ya no vale (revocado o caducado): hay que volver a conectar. */
 export function isInvalidGrant(error: unknown): boolean {
   const message =

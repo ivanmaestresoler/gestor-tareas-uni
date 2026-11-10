@@ -25,13 +25,15 @@ de Google. Solo hay que hacerlo una vez y se tarda unos 10 minutos.
 
 Es la pantalla que te muestra Google al pedirte permiso.
 
-1. Menú ☰ → **APIs y servicios** → **Pantalla de consentimiento de OAuth** (o **Google Auth
-   Platform**) → **Comenzar**.
+1. Abre <https://console.cloud.google.com/auth/overview> (sección **Google Auth Platform**,
+   antes llamada «Pantalla de consentimiento de OAuth») → **Comenzar**.
 2. **Información de la app:** nombre `Tareas Uni` y tu email como correo de asistencia.
 3. **Público:** elige **Externo**.
 4. **Información de contacto:** tu email. Acepta la política y pulsa **Crear**.
-5. Ve a **Acceso a los datos** → **Agregar o quitar permisos**. Abajo, en «Agregar permisos
-   manualmente», pega estas dos líneas:
+5. *(Opcional, puedes saltarlo)* Ve a **Acceso a los datos**
+   (<https://console.cloud.google.com/auth/scopes>) → **Agregar o quitar permisos**. Abajo, en
+   «Agregar permisos manualmente», pega estas dos líneas. Para uso personal no hace falta: la app
+   pide los permisos igualmente al conectar.
    ```
    https://www.googleapis.com/auth/calendar.app.created
    https://www.googleapis.com/auth/tasks

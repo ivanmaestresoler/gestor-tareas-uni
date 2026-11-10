@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createOAuthClient } from "@/lib/google/auth";
+import { createOAuthClient, emailFromIdToken } from "@/lib/google/auth";
 import { SETTING_KEYS, setSettings } from "@/lib/settings";
 
 /** Paso 2 de OAuth: Google vuelve aquí con un `code` que cambiamos por los tokens. */
@@ -23,18 +23,9 @@ export async function GET(request: Request) {
     const { tokens } = await client.getToken(code);
     if (!tokens.refresh_token) return back("sin-refresh-token");
 
-    let email = "";
-    if (tokens.id_token) {
-      const ticket = await client.verifyIdToken({
-        idToken: tokens.id_token,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      email = ticket.getPayload()?.email ?? "";
-    }
-
     await setSettings({
       [SETTING_KEYS.googleRefreshToken]: tokens.refresh_token,
-      [SETTING_KEYS.googleEmail]: email,
+      [SETTING_KEYS.googleEmail]: tokens.id_token ? emailFromIdToken(tokens.id_token) : "",
     });
     return back("conectado");
   } catch (error) {
