@@ -2,9 +2,11 @@
 
 import { eq } from "drizzle-orm";
 import { refresh } from "next/cache";
+import { after } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { tasks } from "@/lib/db/schema";
+import { pushTask, removeFromGoogle } from "@/lib/google/sync";
 import { formDataToObject, parseTaskForm } from "./validation";
 
 /**
@@ -31,23 +33,35 @@ export async function saveTask(_prev: ActionState, formData: FormData): Promise<
   }
 
   const rawId = formData.get("id");
+  let id: number;
   try {
     if (rawId) {
-      const id = idSchema.parse(rawId);
+      id = idSchema.parse(rawId);
       await db
         .update(tasks)
         .set({ ...parsed.data, updatedAt: new Date() })
         .where(eq(tasks.id, id));
     } else {
-      await db.insert(tasks).values(parsed.data);
+      [{ id }] = await db.insert(tasks).values(parsed.data).returning({ id: tasks.id });
     }
   } catch (error) {
     console.error("Error guardando la tarea", error);
     return { ok: false, message: "No se pudo guardar la tarea" };
   }
 
+  syncToGoogleLater(id);
   refresh();
   return { ok: true };
+}
+
+/**
+ * `after()` ejecuta el código DESPUÉS de responder al navegador: la interfaz se
+ * actualiza al instante y la llamada a Google se hace en segundo plano.
+ * Si falla (sin internet, por ejemplo), no pasa nada: el botón "Sincronizar"
+ * lo arreglará más tarde.
+ */
+function syncToGoogleLater(id: number) {
+  after(() => pushTask(id).catch((e) => console.error("No se pudo sincronizar con Google", e)));
 }
 
 export async function toggleTaskStatus(id: number) {
@@ -61,11 +75,17 @@ export async function toggleTaskStatus(id: number) {
     .update(tasks)
     .set({ status: task.status === "hecha" ? "pendiente" : "hecha", updatedAt: new Date() })
     .where(eq(tasks.id, taskId));
+  syncToGoogleLater(taskId);
   refresh();
 }
 
 export async function deleteTask(id: number) {
   const taskId = idSchema.parse(id);
-  await db.delete(tasks).where(eq(tasks.id, taskId));
+  const [deleted] = await db.delete(tasks).where(eq(tasks.id, taskId)).returning();
+  if (deleted) {
+    after(() =>
+      removeFromGoogle(deleted).catch((e) => console.error("No se pudo borrar en Google", e)),
+    );
+  }
   refresh();
 }

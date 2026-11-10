@@ -18,6 +18,7 @@ function task(overrides: Partial<Task> = {}): Task {
     externalId: null,
     externalUrl: null,
     googleEventId: null,
+    googleTaskId: null,
     createdAt: new Date(),
     updatedAt: new Date(),
     ...overrides,

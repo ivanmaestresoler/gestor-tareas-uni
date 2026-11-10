@@ -29,12 +29,22 @@ export const tasks = sqliteTable("tasks", {
   externalId: text("external_id").unique(),
   externalUrl: text("external_url"),
   googleEventId: text("google_event_id"),
+  googleTaskId: text("google_task_id"),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .default(sql`(unixepoch() * 1000)`),
   updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .notNull()
     .default(sql`(unixepoch() * 1000)`),
+});
+
+/**
+ * Ajustes de la app en formato clave/valor (conexión con Google, opciones de
+ * sincronización...). Al ser una app de un solo usuario no hace falta más.
+ */
+export const settings = sqliteTable("settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
 });
 
 export type Task = typeof tasks.$inferSelect;

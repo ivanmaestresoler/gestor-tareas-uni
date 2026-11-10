@@ -15,9 +15,12 @@
     "db:seed": "node --env-file-if-exists=.env scripts/seed.mts"
   },
   "dependencies": {
+    "@googleapis/calendar": "^20.1.0",
+    "@googleapis/tasks": "^17.1.0",
     "@libsql/client": "^0.18.0",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.4",
+    "google-auth-library": "^11.3.4",
     "next": "16.4.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
