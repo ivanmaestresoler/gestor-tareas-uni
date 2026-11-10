@@ -41,8 +41,13 @@ describe("toGoogleTask", () => {
   it("guarda el día a medianoche UTC y la hora en las notas", () => {
     const g = toGoogleTask(task({ dueDate: new Date("2026-11-20T23:59:00"), notes: "En PDF" }));
     expect(g.due).toBe("2026-11-20T00:00:00.000Z");
-    expect(g.notes).toContain("Hora límite: 23:59");
-    expect(g.notes).toContain("En PDF");
+    expect(g.notes).toBe("Entrega · Hora límite: 23:59\n\nEn PDF");
+  });
+
+  it("la asignatura sale en el título pero no se repite en las notas", () => {
+    const g = toGoogleTask(task({ subject: "Física" }));
+    expect(g.title).toBe("Práctica 3 · Física");
+    expect(g.notes).not.toContain("Física");
   });
 
   it("una tarea hecha se marca como completada", () => {

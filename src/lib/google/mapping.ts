@@ -26,12 +26,11 @@ export interface RemoteGoogleTask {
 
 /**
  * Tarea → Google Tasks. Google Tasks solo guarda el DÍA de vencimiento (no la hora),
- * así que la hora la ponemos en las notas. La asignatura va en el título para que
- * se vea en el widget.
+ * así que la hora la ponemos en las notas. La asignatura va solo en el título
+ * (para que se vea en el widget), no se repite en las notas.
  */
 export function toGoogleTask(task: Task): GoogleTaskBody {
   const details = [
-    task.subject,
     TYPE_LABELS[task.type],
     task.dueDate && !task.allDay ? `Hora límite: ${format(task.dueDate, "HH:mm")}` : null,
   ].filter(Boolean);
