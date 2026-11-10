@@ -7,7 +7,6 @@ import { tasks, type Task } from "@/lib/db/schema";
 import { getSettings, SETTING_KEYS, setSettings } from "@/lib/settings";
 import { getAuthorizedClient } from "./auth";
 import {
-  fromGoogleTask,
   googleTaskDiffers,
   isCalendarEligible,
   resolveStatus,
@@ -23,7 +22,6 @@ export interface SyncSummary {
   tasksCreated: number;
   tasksUpdated: number;
   completedFromGoogle: number;
-  importedFromGoogle: number;
   eventsUpserted: number;
   eventsDeleted: number;
 }
@@ -167,7 +165,9 @@ async function upsertCalendarEvent(
 /**
  * Sincronización completa (botón "Sincronizar ahora"):
  * 1. Google Tasks: sube/actualiza todas las tareas, recoge las que marcaste como
- *    hechas en el móvil e importa las que creaste directamente en Google Tasks.
+ *    hechas en el móvil. Las tareas creadas directamente en Google Tasks NO se
+ *    importan: las tareas solo se crean desde la app, que es donde se ponen la
+ *    asignatura, el tipo y la hora.
  * 2. Google Calendar: crea/actualiza eventos de entregas y exámenes con fecha.
  */
 export async function syncAll(): Promise<SyncSummary> {
@@ -180,7 +180,6 @@ export async function syncAll(): Promise<SyncSummary> {
     tasksCreated: 0,
     tasksUpdated: 0,
     completedFromGoogle: 0,
-    importedFromGoogle: 0,
     eventsUpserted: 0,
     eventsDeleted: 0,
   };
@@ -190,11 +189,9 @@ export async function syncAll(): Promise<SyncSummary> {
     const remote = await listRemoteTasks(api.tasks, tasklist);
     const remoteById = new Map(remote.filter((r) => r.id).map((r) => [r.id!, r]));
     const local = await db.select().from(tasks);
-    const linked = new Set<string>();
 
     for (let task of local) {
       const r = task.googleTaskId ? remoteById.get(task.googleTaskId) : undefined;
-      if (task.googleTaskId) linked.add(task.googleTaskId);
 
       // 1) El estado (hecha/pendiente) lo decide el cambio más reciente.
       if (r && resolveStatus(task, r) === "remote") {
@@ -214,14 +211,6 @@ export async function syncAll(): Promise<SyncSummary> {
       if (res.id !== task.googleTaskId) {
         await db.update(tasks).set({ googleTaskId: res.id }).where(eq(tasks.id, task.id));
       }
-      linked.add(res.id);
-    }
-
-    // 3) Tareas creadas directamente en Google Tasks → las importamos a la app.
-    for (const r of remote) {
-      if (!r.id || linked.has(r.id) || r.deleted || !r.title?.trim()) continue;
-      await db.insert(tasks).values(fromGoogleTask(r));
-      summary.importedFromGoogle++;
     }
   }
 

@@ -164,6 +164,10 @@ async function GoogleSection({ searchParams }: { searchParams: PageProps<"/ajust
             <strong>Universidad</strong>.
           </li>
         </ol>
+        <p className="mt-3 text-xs text-zinc-500">
+          Desde el widget puedes ver tus tareas y marcarlas como hechas. Las tareas nuevas créalas
+          aquí, en la app: lo que crees directamente en Google Tasks no se importa.
+        </p>
       </Card>
     </>
   );

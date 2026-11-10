@@ -71,20 +71,6 @@ export function resolveStatus(
   return remoteUpdated > local.updatedAt.getTime() ? "remote" : "local";
 }
 
-/** Una tarea creada directamente en Google Tasks (p. ej. desde el widget) → tarea nueva. */
-export function fromGoogleTask(remote: RemoteGoogleTask) {
-  const dueDate = remote.due ? parseISO(remote.due.slice(0, 10)) : null; // día en hora local
-  return {
-    title: (remote.title ?? "").trim() || "(Sin título)",
-    notes: remote.notes?.trim() || null,
-    dueDate,
-    allDay: Boolean(dueDate),
-    status: remote.status === "completed" ? ("hecha" as const) : ("pendiente" as const),
-    type: "entrega" as const,
-    googleTaskId: remote.id ?? null,
-  };
-}
-
 /** Solo las entregas y exámenes con fecha van al calendario. */
 export function isCalendarEligible(task: Pick<Task, "type" | "dueDate">): boolean {
   return Boolean(task.dueDate) && (task.type === "entrega" || task.type === "examen");

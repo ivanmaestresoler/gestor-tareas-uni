@@ -34,7 +34,6 @@ export function SyncButton() {
             s.tasksCreated && `${s.tasksCreated} tareas subidas`,
             s.tasksUpdated && `${s.tasksUpdated} actualizadas`,
             s.completedFromGoogle && `${s.completedFromGoogle} completadas desde el móvil`,
-            s.importedFromGoogle && `${s.importedFromGoogle} nuevas desde Google Tasks`,
             s.eventsUpserted && `${s.eventsUpserted} eventos en el calendario`,
             s.eventsDeleted && `${s.eventsDeleted} eventos borrados`,
           ]

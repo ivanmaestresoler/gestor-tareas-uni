@@ -100,7 +100,7 @@ personas.
 |---|---|
 | Creas o editas una tarea en la app | Se envía a Google al momento, en segundo plano |
 | Marcas una tarea como hecha en el widget | La app la marca como hecha al pulsar «Sincronizar ahora» |
-| Creas una tarea en el widget | Se importa a la app al sincronizar |
+| Creas una tarea en el widget | **No** se importa a la app: crea las tareas desde la app, que es donde puedes poner asignatura, tipo y hora |
 | Borras una tarea en la app | Se borra también en Google |
 | Tareas sin fecha | Van a Google Tasks, pero no al calendario |
 | Tareas de tipo «Otro» | Van a Google Tasks, pero no al calendario |

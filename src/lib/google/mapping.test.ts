@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Task } from "@/lib/db/schema";
 import {
-  fromGoogleTask,
   googleTaskDiffers,
   resolveStatus,
   toCalendarEvent,
@@ -81,16 +80,6 @@ describe("resolveStatus", () => {
 
   it("si el cambio en la app es más reciente, gana la app", () => {
     expect(resolveStatus(local, { status: "completed", updated: "2026-11-09T12:00:00Z" })).toBe("local");
-  });
-});
-
-describe("fromGoogleTask", () => {
-  it("convierte una tarea creada desde el widget", () => {
-    const t = fromGoogleTask({ id: "abc", title: " Comprar bata ", due: "2026-11-20T00:00:00.000Z", status: "needsAction" });
-    expect(t.title).toBe("Comprar bata");
-    expect(t.googleTaskId).toBe("abc");
-    expect(t.allDay).toBe(true);
-    expect([t.dueDate?.getFullYear(), t.dueDate?.getMonth(), t.dueDate?.getDate()]).toEqual([2026, 10, 20]);
   });
 });
 
