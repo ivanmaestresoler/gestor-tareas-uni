@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { parseTaskForm } from "./validation";
 
-const base = { title: "Práctica 1", type: "entrega", priority: "media", status: "pendiente" };
+const base = { title: "Práctica 1", type: "entrega" };
 
 describe("parseTaskForm", () => {
   it("acepta una tarea sin fecha", () => {
@@ -39,6 +39,14 @@ describe("parseTaskForm", () => {
   it("rechaza tipos no válidos", () => {
     const r = parseTaskForm({ ...base, type: "fiesta" });
     expect(r.success).toBe(false);
+  });
+
+  it("ignora estado y prioridad: editar una tarea no cambia si está hecha", () => {
+    const r = parseTaskForm({ ...base, status: "hecha", priority: "alta" });
+    expect(r.success).toBe(true);
+    if (!r.success) return;
+    expect(r.data).not.toHaveProperty("status");
+    expect(r.data).not.toHaveProperty("priority");
   });
 
   it("no permite hora sin fecha", () => {

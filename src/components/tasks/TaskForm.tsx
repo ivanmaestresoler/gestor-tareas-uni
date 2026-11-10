@@ -1,9 +1,9 @@
 "use client";
 
 import { useActionState, useEffect } from "react";
-import { TASK_PRIORITIES, TASK_STATUSES, TASK_TYPES, type Task } from "@/lib/db/schema";
+import { TASK_TYPES, type Task } from "@/lib/db/schema";
 import { saveTask, type ActionState } from "@/lib/tasks/actions";
-import { PRIORITY_LABELS, STATUS_LABELS, TYPE_LABELS } from "@/lib/tasks/labels";
+import { TYPE_LABELS } from "@/lib/tasks/labels";
 import { toDateInput, toTimeInput } from "@/lib/format";
 
 interface Props {
@@ -43,36 +43,26 @@ export function TaskForm({ task, defaultDate, subjects, onDone, onCancel }: Prop
         />
       </Field>
 
-      <Field label="Asignatura" error={err("subject")}>
-        <input
-          name="subject"
-          defaultValue={task?.subject ?? ""}
-          list="subjects-list"
-          placeholder="Estructuras de Datos"
-          className="field"
-        />
-        <datalist id="subjects-list">
-          {subjects.map((s) => (
-            <option key={s} value={s} />
-          ))}
-        </datalist>
-      </Field>
-
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_8.5rem] gap-3">
+        <Field label="Asignatura" error={err("subject")}>
+          <input
+            name="subject"
+            defaultValue={task?.subject ?? ""}
+            list="subjects-list"
+            placeholder="Estructuras de Datos"
+            className="field"
+          />
+          <datalist id="subjects-list">
+            {subjects.map((s) => (
+              <option key={s} value={s} />
+            ))}
+          </datalist>
+        </Field>
         <Field label="Tipo" error={err("type")}>
           <select name="type" defaultValue={task?.type ?? "entrega"} className="field">
             {TASK_TYPES.map((t) => (
               <option key={t} value={t}>
                 {TYPE_LABELS[t]}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field label="Prioridad" error={err("priority")}>
-          <select name="priority" defaultValue={task?.priority ?? "media"} className="field">
-            {TASK_PRIORITIES.map((p) => (
-              <option key={p} value={p}>
-                {PRIORITY_LABELS[p]}
               </option>
             ))}
           </select>
@@ -97,16 +87,6 @@ export function TaskForm({ task, defaultDate, subjects, onDone, onCancel }: Prop
           />
         </Field>
       </div>
-
-      <Field label="Estado" error={err("status")}>
-        <select name="status" defaultValue={task?.status ?? "pendiente"} className="field">
-          {TASK_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {STATUS_LABELS[s]}
-            </option>
-          ))}
-        </select>
-      </Field>
 
       <Field label="Notas" error={err("notes")}>
         <textarea

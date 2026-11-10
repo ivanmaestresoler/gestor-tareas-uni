@@ -17,10 +17,10 @@ olvidar, tienen su propio panel destacado y también llegan al widget.
 
 ## ✨ Funcionalidades
 
-- **Tareas completas:** título, asignatura, tipo (entrega / examen / otro), fecha y hora
-  opcionales, prioridad, estado y notas. Se pueden crear, editar, borrar y marcar como hechas.
-- **Vista de lista** con búsqueda (no distingue tildes) y filtros por asignatura, tipo, prioridad
-  y estado. Los filtros se guardan en la URL.
+- **Tareas sencillas:** título, asignatura, tipo (entrega / examen / otro), fecha y hora
+  opcionales y notas. Se pueden crear, editar, borrar y marcar como hechas con un clic.
+- **Vista de lista** con búsqueda (no distingue tildes) y filtros por asignatura, tipo y estado.
+  Los filtros se guardan en la URL.
 - **Secciones** Atrasadas, Próximas y Hechas, y un panel destacado **Sin fecha**.
 - **Vista de calendario** mensual. Pulsa un día para crear una tarea en esa fecha.
 - **Google Tasks:** todas tus tareas, incluidas las que no tienen fecha, en la lista

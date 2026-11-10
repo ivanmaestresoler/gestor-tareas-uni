@@ -4,7 +4,7 @@ import { useOptimistic, useTransition } from "react";
 import type { Task } from "@/lib/db/schema";
 import { deleteTask, toggleTaskStatus } from "@/lib/tasks/actions";
 import { isOverdue } from "@/lib/tasks/filters";
-import { PRIORITY_LABELS, PRIORITY_STYLES, TYPE_LABELS, TYPE_STYLES } from "@/lib/tasks/labels";
+import { TYPE_LABELS, TYPE_STYLES } from "@/lib/tasks/labels";
 import { formatDue, relativeDay } from "@/lib/format";
 import { CheckIcon, ClockIcon, LinkIcon, PencilIcon, TrashIcon } from "@/components/icons";
 import { useTaskDialog } from "./TaskDialogProvider";
@@ -95,9 +95,6 @@ export function TaskCard({ task, now }: { task: Task; now: Date }) {
               <span className="text-zinc-400">· {relativeDay(task.dueDate, now)}</span>
             </span>
           )}
-          <span className={`font-medium ${PRIORITY_STYLES[task.priority]}`}>
-            {"●"} {PRIORITY_LABELS[task.priority]}
-          </span>
           {task.externalUrl && (
             <a
               href={task.externalUrl}

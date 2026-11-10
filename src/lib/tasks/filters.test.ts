@@ -33,9 +33,8 @@ describe("parseFilters", () => {
   });
 
   it("ignora valores no válidos", () => {
-    const f = parseFilters({ tipo: "fiesta", prioridad: "urgente", estado: "x" });
+    const f = parseFilters({ tipo: "fiesta", estado: "x" });
     expect(f.type).toBeUndefined();
-    expect(f.priority).toBeUndefined();
     expect(f.status).toBe("pendientes");
   });
 
@@ -95,14 +94,14 @@ describe("groupTasks y sortTasks", () => {
     expect(g.done.map((t) => t.title)).toEqual(["hecha"]);
   });
 
-  it("ordena por fecha y, sin fecha, por prioridad", () => {
+  it("ordena por fecha y, sin fecha, por título", () => {
     const sorted = sortTasks([
-      task({ title: "baja", priority: "baja" }),
+      task({ title: "Zoología" }),
       task({ title: "tarde", dueDate: new Date("2026-11-30") }),
-      task({ title: "alta", priority: "alta" }),
+      task({ title: "Álgebra" }),
       task({ title: "pronto", dueDate: new Date("2026-11-11") }),
     ]);
-    expect(sorted.map((t) => t.title)).toEqual(["pronto", "tarde", "alta", "baja"]);
+    expect(sorted.map((t) => t.title)).toEqual(["pronto", "tarde", "Álgebra", "Zoología"]);
   });
 });
 

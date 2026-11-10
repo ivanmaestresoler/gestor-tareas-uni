@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TASK_PRIORITIES, TASK_STATUSES, TASK_TYPES } from "@/lib/db/schema";
+import { TASK_TYPES } from "@/lib/db/schema";
 
 /** Convierte "" en undefined para que los campos vacíos cuenten como "no rellenado". */
 const optionalText = (max: number) =>
@@ -13,14 +13,15 @@ const optionalText = (max: number) =>
 /**
  * Esquema del formulario de tarea. La fecha y la hora llegan como texto desde
  * los <input type="date"> y <input type="time"> (ambos opcionales).
+ *
+ * El estado (hecha/pendiente) no está en el formulario: una tarea nueva empieza
+ * pendiente y se marca como hecha con la casilla de la tarjeta.
  */
 export const taskFormSchema = z
   .object({
     title: z.string().trim().min(1, "El título es obligatorio").max(200, "Máximo 200 caracteres"),
     subject: optionalText(100),
     type: z.enum(TASK_TYPES, { error: "Tipo no válido" }),
-    priority: z.enum(TASK_PRIORITIES, { error: "Prioridad no válida" }),
-    status: z.enum(TASK_STATUSES, { error: "Estado no válido" }),
     date: z
       .string()
       .regex(/^(\d{4}-\d{2}-\d{2})?$/, "Fecha no válida")
@@ -42,8 +43,6 @@ export interface TaskInput {
   title: string;
   subject: string | null;
   type: (typeof TASK_TYPES)[number];
-  priority: (typeof TASK_PRIORITIES)[number];
-  status: (typeof TASK_STATUSES)[number];
   dueDate: Date | null;
   allDay: boolean;
   notes: string | null;

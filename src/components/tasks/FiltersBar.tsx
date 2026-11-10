@@ -2,8 +2,8 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
-import { TASK_PRIORITIES, TASK_TYPES } from "@/lib/db/schema";
-import { PRIORITY_LABELS, TYPE_LABELS } from "@/lib/tasks/labels";
+import { TASK_TYPES } from "@/lib/db/schema";
+import { TYPE_LABELS } from "@/lib/tasks/labels";
 import { SearchIcon } from "@/components/icons";
 
 const STATUS_OPTIONS = [
@@ -39,7 +39,7 @@ export function FiltersBar({ subjects }: { subjects: string[] }) {
   }, [query]);
 
   const status = params.get("estado") ?? "pendientes";
-  const hasFilters = ["q", "asignatura", "tipo", "prioridad", "estado"].some((k) => params.has(k));
+  const hasFilters = ["q", "asignatura", "tipo", "estado"].some((k) => params.has(k));
 
   return (
     <div
@@ -59,7 +59,7 @@ export function FiltersBar({ subjects }: { subjects: string[] }) {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:flex">
+      <div className="grid grid-cols-2 gap-2 sm:flex">
         <select
           aria-label="Asignatura"
           value={params.get("asignatura") ?? ""}
@@ -83,19 +83,6 @@ export function FiltersBar({ subjects }: { subjects: string[] }) {
           {TASK_TYPES.map((t) => (
             <option key={t} value={t}>
               {TYPE_LABELS[t]}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="Prioridad"
-          value={params.get("prioridad") ?? ""}
-          onChange={(e) => setParam("prioridad", e.target.value)}
-          className="field sm:w-32"
-        >
-          <option value="">Prioridad</option>
-          {TASK_PRIORITIES.map((p) => (
-            <option key={p} value={p}>
-              {PRIORITY_LABELS[p]}
             </option>
           ))}
         </select>
