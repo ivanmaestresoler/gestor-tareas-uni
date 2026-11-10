@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100;
+}
+
+/* Fondo oscurecido del <dialog> modal */
+dialog::backdrop {
+  background: rgb(9 9 11 / 0.55);
+  backdrop-filter: blur(2px);
+}
+
+/* Estilo base de los campos de formulario */
+@utility field {
+  @apply w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm shadow-xs outline-none transition
+    placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20
+    dark:border-zinc-700 dark:bg-zinc-900 dark:focus:border-indigo-400;
+}
