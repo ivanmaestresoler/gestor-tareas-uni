@@ -13,10 +13,10 @@ const STATUS_OPTIONS = [
 ];
 
 /**
- * Los filtros se guardan en la URL (?asignatura=...&tipo=...). Ventajas: el
- * servidor puede filtrar, el botón "atrás" funciona y puedes guardar el enlace.
+ * Los filtros se guardan en la URL (?q=...&tipo=...). Ventajas: el servidor
+ * puede filtrar, el botón "atrás" funciona y puedes guardar el enlace.
  */
-export function FiltersBar({ subjects }: { subjects: string[] }) {
+export function FiltersBar() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -39,7 +39,7 @@ export function FiltersBar({ subjects }: { subjects: string[] }) {
   }, [query]);
 
   const status = params.get("estado") ?? "pendientes";
-  const hasFilters = ["q", "asignatura", "tipo", "estado"].some((k) => params.has(k));
+  const hasFilters = ["q", "tipo", "estado"].some((k) => params.has(k));
 
   return (
     <div
@@ -47,37 +47,24 @@ export function FiltersBar({ subjects }: { subjects: string[] }) {
         isPending ? "opacity-70" : ""
       }`}
     >
-      <div className="relative min-w-0 sm:w-56">
-        <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Buscar…"
-          aria-label="Buscar tareas"
-          className="field pl-9"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-2 sm:flex">
-        <select
-          aria-label="Asignatura"
-          value={params.get("asignatura") ?? ""}
-          onChange={(e) => setParam("asignatura", e.target.value)}
-          className="field sm:w-44"
-        >
-          <option value="">Asignatura</option>
-          {subjects.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+      <div className="flex gap-2">
+        {/* La búsqueda también encuentra por asignatura (busca en título, asignatura y notas). */}
+        <div className="relative min-w-0 flex-1 sm:w-64 sm:flex-none">
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-zinc-400" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar tarea o asignatura…"
+            aria-label="Buscar tareas"
+            className="field pl-9"
+          />
+        </div>
         <select
           aria-label="Tipo"
           value={params.get("tipo") ?? ""}
           onChange={(e) => setParam("tipo", e.target.value)}
-          className="field sm:w-32"
+          className="field w-32 shrink-0"
         >
           <option value="">Tipo</option>
           {TASK_TYPES.map((t) => (

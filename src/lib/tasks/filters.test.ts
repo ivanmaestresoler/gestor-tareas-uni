@@ -39,8 +39,8 @@ describe("parseFilters", () => {
   });
 
   it("lee los filtros válidos", () => {
-    const f = parseFilters({ q: " árbol ", asignatura: "Física", tipo: "examen", estado: "todas" });
-    expect(f).toMatchObject({ q: "árbol", subject: "Física", type: "examen", status: "todas" });
+    const f = parseFilters({ q: " árbol ", tipo: "examen", estado: "todas" });
+    expect(f).toMatchObject({ q: "árbol", type: "examen", status: "todas" });
   });
 });
 
@@ -50,6 +50,11 @@ describe("applyFilters", () => {
     task({ title: "Parcial", subject: "Cálculo", type: "examen" }),
     task({ title: "Hecha", status: "hecha" }),
   ];
+
+  it("la búsqueda también encuentra por asignatura", () => {
+    const r = applyFilters(tasks, { status: "todas", q: "calculo" });
+    expect(r.map((t) => t.title)).toEqual(["Parcial"]);
+  });
 
   it("busca sin distinguir tildes ni mayúsculas", () => {
     const r = applyFilters(tasks, { status: "todas", q: "ARBOLES" });

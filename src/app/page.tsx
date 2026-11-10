@@ -50,7 +50,7 @@ async function TaskList({ searchParams }: { searchParams: PageProps<"/">["search
       </dl>
 
       <div className="mb-6">
-        <FiltersBar subjects={subjects} />
+        <FiltersBar />
       </div>
 
       {all.length === 0 ? (

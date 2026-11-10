@@ -5,7 +5,6 @@ export type StatusFilter = "pendientes" | "hechas" | "todas";
 
 export interface TaskFilters {
   q?: string;
-  subject?: string;
   type?: TaskType;
   status: StatusFilter;
 }
@@ -14,13 +13,12 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 const first = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
 
-/** Lee los filtros desde la URL (?q=...&asignatura=...), ignorando valores no válidos. */
+/** Lee los filtros desde la URL (?q=...&tipo=...), ignorando valores no válidos. */
 export function parseFilters(params: SearchParams): TaskFilters {
   const type = first(params.tipo);
   const status = first(params.estado);
   return {
     q: first(params.q)?.trim() || undefined,
-    subject: first(params.asignatura) || undefined,
     type: TASK_TYPES.includes(type as TaskType) ? (type as TaskType) : undefined,
     status: status === "hechas" || status === "todas" ? status : "pendientes",
   };
@@ -35,7 +33,6 @@ export function applyFilters(tasks: Task[], f: TaskFilters): Task[] {
   return tasks.filter((t) => {
     if (f.status === "pendientes" && t.status !== "pendiente") return false;
     if (f.status === "hechas" && t.status !== "hecha") return false;
-    if (f.subject && t.subject !== f.subject) return false;
     if (f.type && t.type !== f.type) return false;
     if (q) {
       const haystack = normalize(`${t.title} ${t.subject ?? ""} ${t.notes ?? ""}`);
